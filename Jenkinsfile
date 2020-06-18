@@ -11,6 +11,7 @@ def remote_docker_host   = 'tcp://192.168.1.18:2375'
 def registry_url = "192.168.1.18:5000"
 def git_branch = "master"
 def github_access_key = "8c2086f34128811949d25d87ac85d69bfd2abb56"
+def appName = "skns_rems"
 pipeline {
   agent any
   stages {
@@ -35,19 +36,31 @@ pipeline {
     stage('build & publish') {
       steps {
         sh """
-          docker-compose build
+          docker-compose -f docker-compose.was-a.yml build
+          docker-compose -f docker-compose.was-a.yml push
         """
       }
     }
 
     stage('restart in staging') {
       steps {
-        sh """
-          docker-compose down
-          docker-compose up -d
-        """
+          script{
+            def CHECK_A_RUN = sh (
+                script: "docker-compose -p ${appName} -f docker-compose.was-a.yml ps | grep Up",
+                returnStatus: true
+              ) == 0
+            if(CHECK_A_RUN)
+            {
+              sh "docker-compose -p ${appName} -f docker-compose.was-b.yml up -d"
+              sleep 10
+              sh "docker-compose -p ${appName} -f docker-compose.was-a.yml down"
+            }else {
+              sh "docker-compose -p ${appName} -f docker-compose.was-a.yml up -d"
+              sleep 10
+              sh "docker-compose -p ${appName} -f docker-compose.was-b.yml down"              
+            }
+          }
       }
     }
-
   }
 }
