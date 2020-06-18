@@ -3,20 +3,23 @@
 # 1. Building the App with Maven
 FROM maven:3-jdk-11
 
+# build all dependencies for offline use
+COPY ./pom.xml ./pom.xml
+COPY ./frontend/pom.xml ./frontend/pom.xml
+COPY ./backend/pom.xml ./backend/pom.xml
+RUN mvn dependency:go-offline -B
+
+
 ADD . /springbootvuejs
 WORKDIR /springbootvuejs
-
-# Just echo so we can see, if everything is there :)
-RUN ls -l
 
 # Run Maven build
 RUN mvn clean install -DskipTests
 
-
 # Just using the build artifact and then removing the build-container
 FROM openjdk:11-jdk
 
-MAINTAINER Jonas Hecht
+MAINTAINER Dalsoft
 
 VOLUME /tmp
 
