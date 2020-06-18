@@ -29,7 +29,7 @@ pipeline {
 
     stage('build') {
       steps {
-        //sh './mvnw clean install -DskipTests'
+        sh 'docker build'
       }
     }
 
