@@ -53,11 +53,11 @@ pipeline {
             {
               sh "docker-compose -p ${appName} -f docker-compose.was-b.yml up -d"
               sleep 10
-              sh "docker-compose -p ${appName} -f docker-compose.was-a.yml down"
+              sh "docker-compose -p ${appName} -f docker-compose.was-a.yml down || true"
             }else {
               sh "docker-compose -p ${appName} -f docker-compose.was-a.yml up -d"
               sleep 10
-              sh "docker-compose -p ${appName} -f docker-compose.was-b.yml down"              
+              sh "docker-compose -p ${appName} -f docker-compose.was-b.yml down || true"              
             }
           }
       }
