@@ -10,7 +10,7 @@ def remote_docker_host   = 'tcp://192.168.1.18:2375'
 //def sns_error_channel_id = '1'
 def registry_url = "192.168.1.18:5000"
 def git_branch = "master"
-
+def github_access_key = "8c2086f34128811949d25d87ac85d69bfd2abb56"
 pipeline {
   agent any
   stages {
@@ -23,6 +23,7 @@ pipeline {
             doGenerateSubmoduleConfigurations: false,
             submoduleCfg: [],
             userRemoteConfigs: [[
+                credentialsId: '002ef614-afb4-463d-a68f-5a0af0f729a3',
                 name: 'origin',
                 url: "git@github.com:tellamon/spring-vue-test.git"
             ]]
@@ -33,7 +34,9 @@ pipeline {
 
     stage('build & publish') {
       steps {
-        sh "docker-compose build"
+        sh """
+          docker-compose build
+        """
       }
     }
 

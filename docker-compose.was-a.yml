@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  rems_was_a:
+    image: ${DOCKER_PRIVATE_REG}/rems_was
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8098"
